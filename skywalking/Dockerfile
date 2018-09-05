@@ -1,19 +1,17 @@
-FROM alpine:3.8 AS skywalking-builder
-
-# Skywalking version
-ARG SKYWALKING_VERSION
-
-ADD http://mirrors.hust.edu.cn/apache/incubator/skywalking/${SKYWALKING_VERSION}/apache-skywalking-apm-incubating-${SKYWALKING_VERSION}.tar.gz /skywalking.tar.gz
-
-RUN mkdir -p /skywalking \
-    && tar -zxvf /skywalking.tar.gz  --strip 1 -C /skywalking
-
-
-FROM java:openjdk-8u111-jre
+FROM openjdk:8u151-alpine
 LABEL MAINTAINER zengql <zengql@live.cn>
 
 # Skywalking version
 ARG SKYWALKING_VERSION
+
+RUN apk --no-cache add \
+       curl \
+    && curl -o skywalking.tar.gz -SL http://mirrors.hust.edu.cn/apache/incubator/skywalking/${SKYWALKING_VERSION}/apache-skywalking-apm-incubating-${SKYWALKING_VERSION}.tar.gz \
+    && mkdir -p /skywalking \
+    && tar -zxvf skywalking.tar.gz  --strip 1 -C /skywalking \
+    && rm -rf /skywalking.tar.gz \
+    && apk --no-cache del \
+       curl
 
 # Skywalking environment configuration
 ENV zookeeper_hostPort=localhost:2181 \
@@ -30,16 +28,19 @@ ENV zookeeper_hostPort=localhost:2181 \
     storage_elasticsearch_clusterName=CollectorDBCluster \
     storage_elasticsearch_clusterNodes=localhost:9300
 
-COPY --from=skywalking-builder /skywalking /skywalking
+ADD skywalking/config/application.yml /skywalking/config/application.yml
+ADD entrypoint.sh /entrypoint.sh
 
 # 1. install required libraries and tools
 # 2. compile and install skywalking
 # 3. remove skywalking sources and unnecessary libraries and tools
-RUN rm -rf /skywalking/agent \
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && chmod +x /entrypoint.sh \
+    && chmod +x /skywalking/bin/startup.sh \
+    && echo "tail -f /dev/null" >> /skywalking/bin/startup.sh \
+    && rm -rf /skywalking/agent
 
-ADD application.yml /skywalking/config/application.yml
-ADD entrypoint.sh /entrypoint.sh
+EXPOSE 8080 10800 11800 12800
 
-RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
