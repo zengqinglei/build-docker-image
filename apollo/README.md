@@ -10,6 +10,8 @@ Apollo(阿波罗)是携程框架部门研发的配置管理平台，拥有以下
 * Java客户端不依赖任何框架，运行于所有Java运行时环境，对Spring/Spring Boot环境也有较好的支持。
 * .Net客户端不依赖任何框架，能够运行于所有.Net运行时环境(包括 .Net Core 哟)。
 
+官方仓库地址：https://github.com/ctripcorp/apollo
+
 ## docker 部署 apollo(阿波罗) 配置中心，下面命令基于ubuntu 18.04.1版本执行
 
 ``` bash
@@ -80,49 +82,59 @@ docker push registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-portal:1.0.0
 
 ### 如何使用 Docker 镜像
 
-1. 配置运行环境，以部署在：192.168.0.103 为例  
+#### 1. 配置运行环境，以部署在：192.168.0.103 为例
+
 修改 ApolloConfigDB.ServerConfig 中的 eureka.service.url 值
 ![image](images/apollo-1.png)
 ApolloPortalDB.ServerConfig 中的环境配置
 ![image](images/apollo-2.png)
-2. 运行 apollo-configservice 镜像
-    ``` bash
-    docker run --name=apollo-configservice  --restart=always  --network=host
-    -v /opt/logs/100003171:/opt/logs/100003171
-    -e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloConfigDB?characterEncoding=utf8'
-    -e 'spring_datasource_username=root'
-    -e 'spring_datasource_password=123456'
-    registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-configservice:1.0.0
 
-    # 心跳检测
-    curl http://192.168.0.103:8080/health
-    ```
-3. 运行 apollo-adminservice 镜像
-    ``` bash
-    docker run --name=apollo-adminservice  --restart=always  --network=host
-    -v /opt/logs/100003172:/opt/logs/100003172
-    -e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloConfigDB?characterEncoding=utf8'
-    -e 'spring_datasource_username=root'
-    -e 'spring_datasource_password=123456'
-    registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-adminservice:1.0.0
+#### 2. 运行 apollo-configservice 镜像
 
-    # 心跳检测
-    curl http://192.168.0.103:8090/health
-    ```
-4. 运行 apollo-portal 镜像
-    ``` bash
-    docker run --name=apollo-portal  --restart=always  --network=host
-    -v /opt/logs/100003173:/opt/logs/100003173
-    -e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloPortalDB?characterEncoding=utf8'
-    -e 'spring_datasource_username=root'
-    -e 'spring_datasource_password=123456'
-    registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-portal:1.0.0
+``` bash
+docker run --name=apollo-configservice  --restart=always  --network=host
+-v /opt/logs/100003171:/opt/logs/100003171
+-e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloConfigDB?characterEncoding=utf8'
+-e 'spring_datasource_username=root'
+-e 'spring_datasource_password=123456'
+registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-configservice:1.0.0
 
-    # 心跳检测
-    curl http://192.168.0.103:8070/health
-    ```
-5. 浏览器访问配置后台管理界面：http://192.168.0.103:8070
+# 心跳检测
+curl http://192.168.0.103:8080/health
+```
+
+#### 3. 运行 apollo-adminservice 镜像
+
+``` bash
+docker run --name=apollo-adminservice  --restart=always  --network=host
+-v /opt/logs/100003172:/opt/logs/100003172
+-e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloConfigDB?characterEncoding=utf8'
+-e 'spring_datasource_username=root'
+-e 'spring_datasource_password=123456'
+registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-adminservice:1.0.0
+
+# 心跳检测
+curl http://192.168.0.103:8090/health
+```
+
+#### 4. 运行 apollo-portal 镜像
+
+``` bash
+docker run --name=apollo-portal  --restart=always  --network=host
+-v /opt/logs/100003173:/opt/logs/100003173
+-e 'spring_datasource_url=jdbc:mysql://192.168.0.105:3306/ApolloPortalDB?characterEncoding=utf8'
+-e 'spring_datasource_username=root'
+-e 'spring_datasource_password=123456'
+registry.cn-shenzhen.aliyuncs.com/zengql-release/apollo-portal:1.0.0
+
+# 心跳检测
+curl http://192.168.0.103:8070/health
+```
+
+#### 5. 浏览器访问配置后台管理界面：http://192.168.0.103:8070
+
 ![image](images/apollo-3.png)
-6. Eureka 服务中心访问界面：http://192.168.0.103:8080
-![image](images/apollo-4.png)
 
+#### 6. Eureka 服务中心访问界面：http://192.168.0.103:8080
+
+![image](images/apollo-4.png)

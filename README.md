@@ -10,22 +10,38 @@
 
 alpine 镜像非常简洁，内部几乎不带任何东西，仅4mb。
 
-1. 启动镜像
-    ``` bash
-    docker run -d -i -t --name=alpine-docker alpine sh
-    ```
-    常用命令：
-    * docker cp {local-dir} alpine-docker:{target-dir}
-    * docker stop alpine-docker
-    * docker rm alpine-docker
-2. 进入镜像
-    ``` bash
-    docker exec -it alpine-docker sh
-    ```
-    常用命令：
-    * ls：列出目录
-    * vi：修改文件内容
-3. 构建镜像
-    ``` bash
-    docker build -t {image-name} --build-arg {arg-name}={arg-value} .
-    ```
+#### 1. 启动镜像
+
+``` bash
+docker run -d -i -t --name=alpine-docker alpine sh
+```
+常用命令：
+* docker cp {local-dir} alpine-docker:{target-dir}
+* docker stop alpine-docker
+* docker rm alpine-docker
+
+#### 2. 进入镜像
+
+``` bash
+docker exec -it alpine-docker sh
+```
+常用命令：
+* ls：列出目录
+* vi：修改文件内容
+
+#### 3. 构建镜像
+
+``` bash
+docker build -t {image-name} --build-arg {arg-name}={arg-value} .
+```
+
+### 记录一些不常用的 Docker 命令
+
+``` bash
+# 删除异常停止的容器
+docker rm `docker ps -a | grep Exited | awk '{print $1}'`
+# 清理无用数据卷
+docker volume prune
+# 删除名称或标签为none的镜像
+docker rmi -f  `docker images | grep '<none>' | awk '{print $3}'`
+```
