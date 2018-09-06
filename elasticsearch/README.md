@@ -44,7 +44,9 @@ docker run -d --name=elasticsearch --restart=always --network=host
 * 注册并下载授权码：https://register.elastic.co/xpack_register
 * 导入授权信息：
     ``` bash
-    curl -XPUT http://192.168.0.102:9200/_license?acknowledge=true -d @zeng-qinglei-92d00a35-2bb3-414b-a426-43af5c8aa2ee-v5.json -uelastic:changeme
+    curl -XPUT http://192.168.0.102:9200/_license?acknowledge=true 
+        -d @zeng-qinglei-92d00a35-2bb3-414b-a426-43af5c8aa2ee-v5.json 
+        -uelastic:changeme
     ```
 ### 4. 验证命令
 
