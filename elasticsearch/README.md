@@ -33,6 +33,14 @@ docker run -d --name=elasticsearch --restart=always --network=host
     docker.elastic.co/elasticsearch/elasticsearch:5.6.11
 ```
 
+由于官方内置了x-pack插件，默认开启了安全认证，上面启动docker禁用了安全认证。
+修改密码：
+``` bash
+curl -XPUT -u elastic '192.168.0.102:9200/_xpack/security/user/elastic/_password' 
+    -H "Content-Type: application/json" 
+    -d '{ "password" : "123456"}'
+``` 
+
 如果镜像下载慢，可以从我的阿里云镜像下载，仅上传了以下两个版本：
 * registry.cn-shenzhen.aliyuncs.com/zengql-release/elasticsearch:5.6.11
 * registry.cn-shenzhen.aliyuncs.com/zengql-release/elasticsearch:6.4.0
