@@ -7,11 +7,12 @@ ARG SKYWALKING_VERSION
 RUN apk --no-cache add \
        curl \
     && curl -o skywalking.tar.gz -SL http://mirrors.hust.edu.cn/apache/incubator/skywalking/${SKYWALKING_VERSION}/apache-skywalking-apm-incubating-${SKYWALKING_VERSION}.tar.gz \
+    && apk --no-cache del \
+       curl \
     && mkdir -p /skywalking \
     && tar -zxvf skywalking.tar.gz  --strip 1 -C /skywalking \
     && rm -rf /skywalking.tar.gz \
-    && apk --no-cache del \
-       curl
+    && rm -rf /skywalking/agent
 
 # Skywalking environment configuration
 ENV zookeeper_hostPort=localhost:2181 \
@@ -38,8 +39,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && chmod +x /entrypoint.sh \
     && chmod +x /skywalking/bin/startup.sh \
-    && echo "tail -f /dev/null" >> /skywalking/bin/startup.sh \
-    && rm -rf /skywalking/agent
+    && echo "tail -f /skywalking/logs/skywalking-collector-server.log" >> /skywalking/bin/startup.sh
 
 EXPOSE 8080 10800 11800 12800
 
