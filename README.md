@@ -44,4 +44,6 @@ docker rm `docker ps -a | grep Exited | awk '{print $1}'`
 docker volume prune
 # 删除名称或标签为none的镜像
 docker rmi -f  `docker images | grep '<none>' | awk '{print $3}'`
+# 查看docker使用资源情况
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 ```
