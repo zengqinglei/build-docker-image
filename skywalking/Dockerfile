@@ -39,7 +39,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && chmod +x /entrypoint.sh \
     && chmod +x /skywalking/bin/startup.sh \
-    && echo "tail -f /skywalking/logs/skywalking-collector-server.log" >> /skywalking/bin/startup.sh
+    && echo "tail -f /dev/null" >> /skywalking/bin/startup.sh
 
 EXPOSE 8080 10800 11800 12800
 
